@@ -13,3 +13,16 @@
 - __alembic revision --autogenerate -m "init project"__ -- создать первые миграции. Делать из корня проекта а не приложения
 - __alembic upgrade head"__ -- применить миграции. Вместо HEAD можно подставить номер миграции
 - __alembic downgrade -1"__ -- откатиться на 1 миграцию назад
+
+---
+
+# Celery
+
+- __pip install celery flower__ --  установка селери и флавер
+- создать файл с похожим содержанием <br/> __from celery import Celery__ <br/>
+    __celery = Celery(__ <br/>
+    __"tasks",__<br/>
+    __broker="redis://localhost:6379",__<br/>
+    __include=["app.tasks.tasks"]__<br/>
+    __)__
+-  __celery -A app.tasks.celery:celery worker --loglevel=INFO --pool=solo__ -- Запуск задач селери

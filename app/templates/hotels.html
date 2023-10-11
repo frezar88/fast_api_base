@@ -5,12 +5,18 @@
     <title>Hotels</title>
 </head>
 <body>
-    {% for item in hotels%}
-    <div>
-        <h1>{{item.name}}</h1>
-         <h1>{{item.location}}</h1>
+{% for item in hotels %}
+    <div style=" display: flex; margin-bottom: 15px; margin-left: 30px">
+        <img src="{{ url_for('static', path='images/' + item.image_id|string + '.webp') }}" alt="отель" width="200">
+        <div>
+            <h1>{{ item.name }}</h1>
+
+
+            <h3>{{ item.location }}</h3>
+        </div>
+
     </div>
-    {%endfor%}
+{% endfor %}
 
 
 </body>

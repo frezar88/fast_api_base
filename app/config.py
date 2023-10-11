@@ -15,8 +15,15 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
 
+    SMTP_HOST: str
+    SMTP_PORT: int
+    SMTP_USER: str
+    SMTP_PASS: str
+
+    REDIS_HOST: str
+    REDIS_PORT: int
+
 
 settings = Settings()
-
 
 DATABASE_URL = f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASS}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
