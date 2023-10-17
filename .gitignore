@@ -3,3 +3,5 @@
 venv
 .env
 .idea
+.pytest_cache
+.pytest_cache/

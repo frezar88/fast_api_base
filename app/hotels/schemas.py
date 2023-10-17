@@ -8,4 +8,3 @@ class SHotels(BaseModel):
     rooms_quantity: int
     services: list
     image_id: int
-

@@ -4,8 +4,8 @@ from typing import List
 from fastapi import APIRouter
 from fastapi_cache.decorator import cache
 
-from app.hotels.service import HotelsService
 from app.hotels.schemas import SHotels
+from app.hotels.service import HotelsService
 
 router = APIRouter(
     prefix="/hotel",

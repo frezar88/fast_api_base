@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, JSON, ForeignKey, Date, Computed
+from sqlalchemy import Column, Computed, Date, ForeignKey, Integer
+from sqlalchemy.orm import relationship
 
 from app.database import Base
 
@@ -6,7 +7,7 @@ from app.database import Base
 class Bookings(Base):
     __tablename__ = "bookings"
 
-    id = Column(Integer, primary_key=True,nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False)
     room_id = Column(ForeignKey("rooms.id"))
     user_id = Column(ForeignKey("users.id"))
     date_from = Column(Date, nullable=False)
@@ -14,3 +15,9 @@ class Bookings(Base):
     price = Column(Integer, nullable=False)
     total_const = Column(Integer, Computed("(date_from - date_to) * price"))
     total_days = Column(Integer, Computed("date_from - date_to"))
+
+    user = relationship("Users", back_populates="booking")
+    room = relationship("Rooms", back_populates="booking")
+
+    def __str__(self):
+        return f"Bookings #{self.id}"

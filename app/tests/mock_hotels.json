@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Cosmos Collection Altay Resort",
+    "location": "Республика алтай, Майминский район, село Урлу-Аспак, Лесхозная улица, 20'",
+    "services": ["Wi-FI"],
+    "rooms_quantity": 21,
+    "image_id": 1
+  },
+  {
+    "name": "Skala",
+    "location": "Республика алтай, Майминский район, посёлок Барангол, Чуйская улица, 40а",
+    "services": ["Парковка"],
+    "rooms_quantity": 30,
+    "image_id": 3
+  },
+  {
+    "name": "Ару-Кёль",
+    "location": "Республика алтай, Турочакский район, село Артыбаш, Телецкая улица, 44А",
+    "services": ["Wi-FI", "Парковка", "Тренажёрный зал"],
+    "rooms_quantity": 19,
+    "image_id": 4
+  },
+  {
+    "name": "Гостиница Сыктывкар",
+    "location": "Республика Коми, Сыктывкар, Коммунистическая улица, 67",
+    "services": ["Wi-FI", "Стоянка"],
+    "rooms_quantity": 22,
+    "image_id": 5
+  },
+  {
+    "name": "Palace",
+    "location": "Республика Коми, Сыктывкар,Первомайская улица, 62",
+    "services": ["Стоянка", "Кондиционер в доме"],
+    "rooms_quantity": 31,
+    "image_id": 6
+  },
+  {
+    "name": "Bridge Resort",
+    "location": "посёлок городского типа Сириус, Фигурная улица, 45",
+    "services": ["Wi-FI", "Вид на море"],
+    "rooms_quantity": 24,
+    "image_id": 7
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "hotel_id": 1,
+    "name": "Улучшенный с террасой и виом на озеро",
+    "description":"",
+    "price":24500 ,
+    "services":["Бесплатный WI-FI", "Кондиционер ( с климат-контролем)"] ,
+    "quantity":5
+  },
+  {
+    "hotel_id": 1,
+    "name": "Делюкс Плюс",
+    "description":"",
+    "price":22450 ,
+    "services":["Бесплатный WI-FI", "Кондиционер"] ,
+    "quantity":10
+  },
+  {
+    "hotel_id": 2,
+    "name": "Номер на 2-x человек",
+    "description":"",
+    "price":4570 ,
+    "services":[] ,
+    "quantity":15
+  },
+  {
+    "hotel_id": 2,
+    "name": "Номер на 3-x человек",
+    "description":"",
+    "price":4350 ,
+    "services":[] ,
+    "quantity":8
+  },
+  {
+    "hotel_id": 3,
+    "name": "Номер полулюкс семейный с 1 двуспальной кроватью",
+    "description":"",
+    "price":7080 ,
+    "services":["Холодильник"] ,
+    "quantity":20
+  },
+  {
+    "hotel_id": 3,
+    "name": "2-комнатный номер люкс комфорт",
+    "description":"",
+    "price":9815 ,
+    "services":[] ,
+    "quantity":10
+  },
+  {
+    "hotel_id": 4,
+    "name": "Стандарт двухместный",
+    "description":"",
+    "price":4300 ,
+    "services":["Бесплатный WI-FI", "Холодильник"] ,
+    "quantity":20
+  },
+  {
+    "hotel_id": 4,
+    "name": "Стандарт улучшенный ПЛЮС",
+    "description":"",
+    "price":4700 ,
+    "services":["Бесплатный WI-FI", "Холодильник", "Ванная комната", "Кондиционер"] ,
+    "quantity":35
+  },
+  {
+    "hotel_id": 5,
+    "name": "Номер стандарт с 2 односпальными кроватями (с завтраком)",
+    "description":"",
+    "price":5000 ,
+    "services":[] ,
+    "quantity":15
+  },
+  {
+    "hotel_id": 5,
+    "name": "Номер полулюкс премиум (с завтраком)",
+    "description":"",
+    "price":8000 ,
+    "services":[] ,
+    "quantity":7
+  },
+  {
+    "hotel_id": 6,
+    "name": "Стандарт (типовой корпус)",
+    "description":"",
+    "price":8125 ,
+    "services":[] ,
+    "quantity":45
+  }
+]

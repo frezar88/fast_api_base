@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
-from jose import jwt
+
 from fastapi import HTTPException
+from jose import jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
 
-from app.users.service import UserService
 from app.config import settings
+from app.users.service import UserService
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
