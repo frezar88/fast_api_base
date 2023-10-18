@@ -9,6 +9,7 @@ load_dotenv()
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file="../.env", extra="ignore")
     MODE: Literal["DEV", "TEST", "PROD"]
+    LOG_LEVEL: Literal["DEBUG", "INFO", "PROD"]
 
     DB_HOST: str
     DB_PORT: int

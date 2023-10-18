@@ -4,6 +4,16 @@
   - __uvicorn app.main:app --reload__ -- запуск приложения в дев режиме
 
 ---
+
+# Postgresql
+
+- https://www.youtube.com/watch?v=kWUW3sMK0Mk&ab_channel=PythonToday -- установка 
+- https://www.pgadmin.org/ -- Установка PgAdmin
+- __`pip install asyncpg`__ --установка асинхронного драйвера постгрес
+- __f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"__ -- пример урла асинхронного подключения к БД
+
+---
+
 # Alembic
 
 - __alembic init migrations__ -- инициализация алембика
@@ -16,13 +26,20 @@
 
 ---
 
+# Redis
+- __https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-20-04-ru__ -- Инструкция по установке Redis для Linux
+- - https://github.com/long2ice/fastapi-cache -- страница либы для работы с кешом в фас апи
+- __`pip install "fastapi-cache2[redis]"`__-- установка
+- в main.py подключить либу 
+- -<br/> __from fastapi_cache.backends.redis import RedisBackend__ <br/><br/> __@app.on_event("startup")__<br/> __async def startup():__<br/>  &nbsp; &nbsp; &nbsp; &nbsp;  __redis = aioredis.from_url(f"redis://{REDIS_HOST}:{REDIS_PORT}")__ <br/>  &nbsp; &nbsp; &nbsp; &nbsp; __FastAPICache.init(RedisBackend(redis), prefix="cache")__
+- __@cache(expire=60)__ -- Декоратор над ендпоинтом который нужно закешировать
+
+---
+
 # Celery
 
 - __`pip install celery`__ --  установка селери и флавер
-- создать файл с похожим содержанием <br/> __from celery import Celery__ <br/>
-    __celery = Celery(__ <br/>
-    __"tasks",__<br/>
-    __broker="redis://localhost:6379",__<br/>
+- создать файл с похожим содержанием <br/> __from celery import Celery__ <br/>  __celery = Celery(__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;    __"tasks",__<br/> &nbsp; &nbsp; &nbsp; &nbsp;    __broker="redis://localhost:6379",__<br/> &nbsp; &nbsp; &nbsp; &nbsp;
     __include=["app.tasks.tasks"]__<br/>
     __)__
 -  __celery -A app.tasks.celery:celery worker --loglevel=INFO --pool=solo__ -- Запуск задач селери
@@ -40,6 +57,7 @@
 # Админка
 
 - __`pip install sqladmin`__ -- установка админки
+- __https://pypi.org/project/sqladmin/__ -- HomePage Admin
 
 ---
 # Тесты
@@ -107,5 +125,42 @@ __pyproject.toml__-- создать файл конфигураций в кор�
 
 ---
 
-# Логирование 
+# Логирование
+### Настройка под себя
+- __`pip install python-json-logger`__ -- Установка
+- __logger.py__ --создаём в приложении
+- - Настройки logger.py:
+- - - __import logging__ <br/> __from datetime import datetime__ <br/> __from pythonjsonlogger import jsonlogger__ <br/> __from app.config import settings__ <br/> <br/>  __logger = logging.getLogger()__ <br/> __logHandler = logging.StreamHandler()__ <br/><br/> __class CustomJsonFormatter(jsonlogger.JsonFormatter):__<br/> &nbsp; &nbsp; &nbsp; &nbsp; __def add_fields(self, log_record, record, message_dict):__<br/>  &nbsp; &nbsp; &nbsp; &nbsp; __super(CustomJsonFormatter, self).add_fields(log_record, record, message_dict)__<br/> &nbsp; &nbsp; &nbsp; &nbsp; __if not log_record.get('timestamp'):__<br/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  __now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")__ <br/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; __log_record["timestamp"] = now__ <br/> &nbsp; &nbsp; &nbsp; &nbsp; __if log_record.get("level"):__<br/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; __log_record["level"] = log_record["level"].upper()__<br/> &nbsp; &nbsp; &nbsp; &nbsp; __else:__<br/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; __log_record["level"] = record.levelname__<br/> <br/> __formatter = CustomJsonFormatter(__<br/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; __"%(timestamp)s %(level)s %(message)s %(module)s %(funcName)s"__<br/> __)__ <br/><br/> __logHandler.setFormatter(formatter)__<br/> __logger.addHandler(logHandler)__<br/> __logger.setLevel(settings.LOG_LEVEL)__<br/><br/>
+- Добавляем декоратор Middleware в main.py :
+- - __@app.middleware("http")__ <br/> __async def add_process_header(request: Request, call_next):__<br/> &nbsp; &nbsp; &nbsp; &nbsp;   __start_time = time.time()__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;    __response = await call_next(request)__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;    __process_time = time.time() - start_time__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;    __logger.info("Request execution time", extra={__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;         __"process_time": round(process_time, 4)__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;    __})__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;    __return response__
+- __logger.error(msg, extra={"test":test}, exc_info=True)__ -- пример вызова логера 
+- - __exc_info=True__ -- отвечает за вывод полученой ошибки <br/>
+
+## Sentry
+- __https://sentry.io/welcome/__ -- HomePage Sentry
+- __https://sentry.io/auth/login/__ -- создать аккаунт
+- __`pip install --upgrade sentry-sdk[fastapi]`__ --установка Sentry
+- в __main.py__ подключаем Sentry до создания приложения fastapi:
+- - __import sentry_sdk__ <br/> <br/> __sentry_sdk.init(__<br/>  &nbsp; &nbsp; &nbsp; &nbsp; __dsn="уникальная ссылка",__ <br/> &nbsp; &nbsp; &nbsp; &nbsp; __traces_sample_rate=1.0,__ <br/>  &nbsp; &nbsp; &nbsp; &nbsp; __profiles_sample_rate=1.0,__ <br/> __)__
+
+---
+
+# Версионирование API (fastapi-versioning)
+
+- __https://github.com/DeanWay/fastapi-versioning__ -- HomePage fastapi-versioning
+- __`pip install fastapi-versioning`__ -- установка библиотеки
+- настройка в __main.py__:
+- - __from fastapi_versioning import VersionedFastAPI__<br/><br/> 
+- - __app = VersionedFastAPI(__<br/> &nbsp; &nbsp; &nbsp; &nbsp;__app,__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;  __version_format='{major}',__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;   __prefix_format='/v{major}',__<br/>  &nbsp; &nbsp; &nbsp; &nbsp;  __# description='Greet users with a nice message',__ <br/> &nbsp; &nbsp; &nbsp; &nbsp;  __\# middleware=[Middleware(SessionMiddleware, secret_key='mysecretkey')]__ <br/>__)__
+- Если происходит ошибка __MOUNT__ то нужно все статики мидверы и админки опустить с вниз
+- __@version(1)__ -- Декоратор над ендпоинтом что бы указать версию
+- __Важно__ - если задать версию то свагер становиться на таком урле  http://127.0.0.1:8000/v1/docs#/ <br/> И если у нас есть __Middleware__ Их уже указывать в VersionedFastAPI 
+
+---
+
+# Docker
+
+- https://docs.docker.com/engine/install/ubuntu/ -- установка докера
+
+
 
