@@ -20,7 +20,7 @@ async def test_test_add_and_get_booking(
     authenticated_ac: AsyncClient,
 ):
     response = await authenticated_ac.post(
-        "/bookings",
+        "v1/bookings",
         params={
             "room_id": room_id,
             "date_from": date_from,
@@ -30,6 +30,6 @@ async def test_test_add_and_get_booking(
 
     assert response.status_code == status_code
 
-    response = await authenticated_ac.get("/bookings")
+    response = await authenticated_ac.get("v1/bookings")
 
     assert len(response.json()) == registration

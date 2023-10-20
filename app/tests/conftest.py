@@ -66,7 +66,7 @@ async def ac():
 @pytest.fixture(scope="session")
 async def authenticated_ac():
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
-        await ac.post("/auth/login", json={
+        await ac.post("v1/auth/login", json={
             "email": "fedor@moloko.ru",
             "password": "tut_budet_hashed_password_1"
         })
