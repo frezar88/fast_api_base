@@ -20,6 +20,7 @@ from app.images.router import router as router_images
 from app.logger import logger
 from app.pages.router import router as router_page
 from app.users.router import router as router_users
+from prometheus_fastapi_instrumentator import Instrumentator, metrics
 
 sentry_sdk.init(
     dsn="https://df6264cfd2a391d4543cf8d20b27ed8c@o4506070143467520.ingest.sentry.io/4506070151462912",
@@ -71,6 +72,12 @@ async def startup():
     redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}")
     FastAPICache.init(RedisBackend(redis), prefix="cache")
 
+
+instrumentator = Instrumentator(
+    should_group_status_codes=False,
+    excluded_handlers=[".*admin.*", "/metrics"],
+)
+instrumentator.instrument(app).expose(app)
 
 # Админка
 admin = Admin(app, engine, authentication_backend=authentication_backend)

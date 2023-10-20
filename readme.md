@@ -183,6 +183,7 @@ __pyproject.toml__-- создать файл конфигураций в кор�
 - - - __docker inspect__ -- Получить подробную информацию о контейнере. <br/><br/>
 
 - - __Удаление контейнеров:__
+- - - __ docker rmi $(docker images -q) --force__ -- удалить все имеющиеся контейнеры принудительно
 - - - __docker rm__ -- Удалить контейнер (нужно указать идентификатор или имя контейнера).
 - - - __docker container prune__ -- Удалить все остановленные контейнеры. <br/><br/>
 
@@ -217,7 +218,9 @@ __pyproject.toml__-- создать файл конфигураций в кор�
 __services:__<br/>
   __&nbsp; &nbsp; &nbsp; &nbsp;db:__<br/>
     __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;image: postgres:14.9____<br/>
-    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;container_name: booking_db____<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;container_name: booking_db__<br/> 
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; __volumes:__ <br/>
+      __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- postgresdata:/var/lib/postgresql/data__<br/>
     __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;env_file:__<br/>
       __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- .env-non-dev__<br/>
 &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;__ports:__<br/>
@@ -263,4 +266,62 @@ __services:__<br/>
       __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- celery__<br/>
     __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;ports:__<br/>
       __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- "5555:5555"__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;prometheus:__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;image: prom/prometheus:v2.43.0__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;container_name: prometheus__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;volumes:__<br/>
+      __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- ./prometheus.yml:/etc/prometheus/prometheus.yml__<br/>
+      __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- prometheusdata:/prometheus__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;restart: unless-stopped__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;ports:__<br/>
+      __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- "9090:9090"__<br/><br/>
 
+  __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;grafana:__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;image: grafana/grafana:9.4.7__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;container_name: grafana__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;volumes:__<br/>
+      __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- grafanadata:/var/lib/grafana__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;restart: unless-stopped__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;ports:__<br/>
+      __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- "3000:3000"__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;environment:__<br/>
+      __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- GF_SECURITY_ADMIN_USER=root__<br/>
+      __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;- GF_SECURITY_ADMIN_PASSWORD=41111__<br/>
+&nbsp; &nbsp; &nbsp; &nbsp;__volumes:__<br/>
+  __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;postgresdata:__<br/>
+  __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;prometheusdata:__<br/>
+  __&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;grafanadata:__<br/>
+
+---
+
+# Grafana (prometheus)
+### prometheus
+- __https://github.com/trallnag/prometheus-fastapi-instrumentator__ -- HomePage Prometheus
+- __http://localhost:9090/targets?search=__ -- проверить статус Prometheus
+- __`pip install prometheus-fastapi-instrumentator`__ -- Установка prometheus<br/><br/>
+- подключение файл (__main.py__) {__указывается после версионирования__}:
+- - __instrumentator = Instrumentator(__ <br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;should_group_status_codes=False,__<br/>
+    __&nbsp; &nbsp; &nbsp; &nbsp;excluded_handlers=[".*admin.*", "/metrics"],__<br/>
+__)__<br/>
+__instrumentator.instrument(app).expose(app)__<br/><br/>
+- в корне создать файл (__prometheus.yml__):
+- - __global:__<br/>
+  &nbsp; &nbsp; &nbsp; &nbsp;__scrape_interval: 15s__<br/>
+  &nbsp; &nbsp; &nbsp; &nbsp;__external_labels:__<br/>
+    &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;__monitor: 'codelab-monitor'__<br/>
+__scrape_configs:__<br/>
+  &nbsp; &nbsp; &nbsp; &nbsp;__- job_name: "prometheus"__<br/>
+    &nbsp; &nbsp; &nbsp; &nbsp;__scrape_interval: 15s__<br/>
+    &nbsp; &nbsp; &nbsp; &nbsp;__static_configs:__<br/>
+      &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;__- targets: [ 'localhost:9090' ]__<br/>
+  __&nbsp; &nbsp; &nbsp; &nbsp;- job_name: 'booking'__<br/>
+    &nbsp; &nbsp; &nbsp; &nbsp; __scrape_interval: 5s__<br/>
+    &nbsp; &nbsp; &nbsp; &nbsp; __static_configs:__<br/>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;__- targets: [ 'booking:8000' ]__<br/><br/>
+
+### Grafana
+- Переходим на __localhost:3000__
+- Login,Password -- __admin__
+- в настройках выбираем DataSource
+- добавляем прометеус. И меняем localhost на то как он назван в докере
+- Далее идём в дашборд и добавляем новый. Нажимаем импортировать настройки и вставляем json из __grafana-dashbord.json__ предварительно в 11 местах подставив свой айди вместо "ваш id"
