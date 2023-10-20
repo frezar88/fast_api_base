@@ -7,8 +7,6 @@ from fastapi_cache.decorator import cache
 from app.hotels.schemas import SHotels
 from app.hotels.service import HotelsService
 
-from fastapi_versioning import version
-
 router = APIRouter(
     prefix="/hotel",
     tags=['Hotels']

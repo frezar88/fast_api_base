@@ -6,11 +6,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from fastapi_versioning import VersionedFastAPI
+from prometheus_fastapi_instrumentator import Instrumentator, metrics
 from redis import asyncio as aioredis
 from sqladmin import Admin
 
 from app.admin.auth import authentication_backend
-from fastapi_versioning import VersionedFastAPI
 from app.admin.views import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
 from app.bookings.router import router as router_bookings
 from app.config import settings
@@ -20,7 +21,6 @@ from app.images.router import router as router_images
 from app.logger import logger
 from app.pages.router import router as router_page
 from app.users.router import router as router_users
-from prometheus_fastapi_instrumentator import Instrumentator, metrics
 
 sentry_sdk.init(
     dsn="https://df6264cfd2a391d4543cf8d20b27ed8c@o4506070143467520.ingest.sentry.io/4506070151462912",
@@ -58,8 +58,8 @@ app.include_router(router_images)
 
 app = VersionedFastAPI(
     app,
-    version_format='{major}',
-    prefix_format='/v{major}',
+    version_format="{major}",
+    prefix_format="/v{major}",
     # description='Greet users with a nice message',
     # middleware=[
     #     Middleware(SessionMiddleware, secret_key='mysecretkey')
@@ -93,9 +93,9 @@ async def add_process_header(request: Request, call_next):
     start_time = time.time()
     response = await call_next(request)
     process_time = time.time() - start_time
-    logger.info("Request execution time", extra={
-        "process_time": round(process_time, 4)
-    })
+    logger.info(
+        "Request execution time", extra={"process_time": round(process_time, 4)}
+    )
     return response
 
 
